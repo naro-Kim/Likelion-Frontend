@@ -1,10 +1,5 @@
-import Router from "./routes/Router"; 
-import { ReactQueryDevtools } from "react-query/devtools";
 import { createGlobalStyle } from "styled-components";
-import { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./theme";
-import { useRecoilValue } from "recoil";
-import { isDarkAtom } from "./atoms";
+import ToDoList from "./ToDoList";
 
 //렌더링될 때, 전역 스코프에 글로벌 스타일을 선언
 // document의 head에 스타일을 추가함
@@ -72,14 +67,10 @@ const GlobalStyle = createGlobalStyle`
  `;
 
 function App() {
-  const isDark = useRecoilValue(isDarkAtom)
   return (
     <>
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <GlobalStyle />
-      <Router />
-      <ReactQueryDevtools />
-      </ThemeProvider>
+      <GlobalStyle /> 
+      <ToDoList />
     </>
   );
 }
