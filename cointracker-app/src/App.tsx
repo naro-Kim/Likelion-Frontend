@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import ToDoList from "./ToDoList";
+import ToDoList from "./components/ToDoList";
 
 //렌더링될 때, 전역 스코프에 글로벌 스타일을 선언
 // document의 head에 스타일을 추가함
