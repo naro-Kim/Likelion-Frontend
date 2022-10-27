@@ -1,5 +1,9 @@
 {
+  "typeRoots": ["node_modules/@types"],
   "compilerOptions": {
+    "types": [
+      "@types/styled-components"
+      ],
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "module": "commonjs",
