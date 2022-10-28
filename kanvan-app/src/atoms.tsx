@@ -5,11 +5,11 @@ interface ItoDoState {
 }
 
 
-export const toDoState = atom({
+export const toDoState = atom<ItoDoState>({
   key: "toDo",
   default: {
     "To Do": ["a", "b", "e", ],
     doing: ["c", "d"],
-    done: ["f"],
+    done: ["f"], 
   },
 });

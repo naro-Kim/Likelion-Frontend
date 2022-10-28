@@ -1,9 +1,4 @@
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./atoms";
 import styled from "styled-components";
@@ -11,7 +6,8 @@ import Board from "./Components/Board";
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 480px;
+  max-width: 320px;
+
   width: 100%;
   margin: 0 auto;
   justify-content: center;
@@ -22,17 +18,17 @@ const Wrapper = styled.div`
 const Boards = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem; 
+  gap: 1rem;
   border-radius: 8px;
   min-height: 40vh;
 `;
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = ({ destination, source, draggableId }: DropResult) => {
-    console.log(destination, source, draggableId);
-    if(destination?.droppableId === source.droppableId)
-    {
+  const onDragEnd = (snapshot: DropResult) => {
+    const { destination, source, draggableId } = snapshot;
+    if (!destination) return;
+    if (destination?.droppableId === source.droppableId) {
       setToDos((prev) => {
         const toDosCopy = [...prev[source.droppableId]];
         // 1) Delete item on source.index
@@ -41,9 +37,24 @@ function App() {
         toDosCopy.splice(destination?.index, 0, draggableId);
         return {
           ...prev,
-          [source.droppableId] : toDosCopy,
-        }
-      })
+          [source.droppableId]: toDosCopy,
+        };
+      });
+    }
+    // Move card to other board
+    if (destination.droppableId !== source.droppableId) {
+      setToDos((prev) => {
+        const src = [...prev[source.droppableId]];
+        const dest = [...prev[destination.droppableId]];
+        src.splice(source.index, 1);
+        // 2) Put back the item on the destination.index
+        dest.splice(destination?.index, 0, draggableId);
+        return {
+          ...prev,
+          [source.droppableId]: src,
+          [destination.droppableId]: dest,
+        };
+      });
     }
   };
 
