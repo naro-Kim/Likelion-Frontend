@@ -31,10 +31,11 @@ function App() {
     if (destination?.droppableId === source.droppableId) {
       setToDos((prev) => {
         const toDosCopy = [...prev[source.droppableId]];
+        const taskObj = toDosCopy[source.index]; // ITodo Type copied obj
         // 1) Delete item on source.index
         toDosCopy.splice(source.index, 1);
         // 2) Put back the item on the destination.index
-        toDosCopy.splice(destination?.index, 0, draggableId);
+        toDosCopy.splice(destination?.index, 0, taskObj);
         return {
           ...prev,
           [source.droppableId]: toDosCopy,
@@ -46,9 +47,10 @@ function App() {
       setToDos((prev) => {
         const src = [...prev[source.droppableId]];
         const dest = [...prev[destination.droppableId]];
+        const taskObj = src[source.index]; // ITodo Type copied obj
         src.splice(source.index, 1);
         // 2) Put back the item on the destination.index
-        dest.splice(destination?.index, 0, draggableId);
+        dest.splice(destination?.index, 0, taskObj);
         return {
           ...prev,
           [source.droppableId]: src,

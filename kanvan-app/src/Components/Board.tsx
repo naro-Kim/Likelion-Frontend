@@ -1,7 +1,9 @@
-import { useRef } from "react";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Droppable } from "react-beautiful-dnd";
 import DragabbleCard from "./DragabbleCard";
+import { ITodo, toDoState } from "../atoms";
+import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
   width: 24vw;
@@ -28,33 +30,61 @@ interface IAreaProps {
 }
 
 const Area = styled.div<IAreaProps>`
-  /* background-color: ${(props) =>
-    props.isDraggingOver ? "#96b5cc" : props.isDraggingFromThis ? "#8283d6" : "transparent"}; */
-  box-shadow:${(props)=> props.isDraggingOver ? "-2px 8px 16px -4px rgba(60, 60, 66, 0.2)"  : props.isDraggingFromThis ? "-2px 8px 16px -4px rgba(60, 60, 66, 0.2)" : "transparent"};
+  background-color: ${(props) =>
+    props.isDraggingOver ? "#9cd4ff" : props.isDraggingFromThis ? "#c7c7d2" : "transparent"};
   flex-grow: 1;
   padding: 1rem;
   transition: all 0.3s ease-in-out;
 `;
 
+interface IForm {
+  toDo: string;
+}
+
 interface IBoardProps {
-  toDos: string[];
+  toDos: ITodo[];
   boardId: string;
 }
 
-function Board({ toDos, boardId }: IBoardProps) {
-  //useRef hook이 document.getElementById와 같은 역할을 함
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onClick = () => {
-    inputRef.current?.focus();
-    setTimeout(()=>{
-      inputRef.current?.blur();
-    }, 2000);
+const Form = styled.form`
+  width: 100%;
+  display:flex;
+  place-content: center;
+  input{
+    font-size: 1rem;
+    text-align: center;
+    border:solid 1px #cecece;
+    border-radius: 5px;
+    background-color: white;
+    padding:0.4rem;
+    margin: 0 auto;
+    width: 88%;
+
+  }
+`;
+
+function Board({ toDos, boardId }: IBoardProps) { 
+  const setToDo = useSetRecoilState(toDoState);
+  const {register, setValue, handleSubmit} = useForm<IForm>();
+  const onValid = ({toDo}:IForm) =>{  
+    const newToDo = {
+      id: Date.now(),
+      text: toDo,
+    };
+    setToDo((prev)=>{
+      return{
+        ...prev,
+        [boardId]:[newToDo, ...prev[boardId]],
+      };
+    });
+    setValue("toDo","");
   };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
-      <input ref={inputRef} placeholder="input text"></input>
-      <button onClick={onClick}>Submit</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input {...register("toDo", {required:true})} type="text" placeholder={`Add task on ${boardId}`} />
+      </Form>
       <Droppable droppableId={boardId}>
         {(provided, snapshot) => (
           <Area
@@ -65,7 +95,7 @@ function Board({ toDos, boardId }: IBoardProps) {
             {...provided.droppableProps}
           >
             {toDos.map((toDo, index) => (
-              <DragabbleCard key={toDo} index={index} toDo={toDo} />
+              <DragabbleCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text}/>
             ))}
             {provided.placeholder}
           </Area>
