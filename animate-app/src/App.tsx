@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
@@ -9,57 +10,38 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
+const BiggerBox = styled.div`
+  width: 500px;
+  height: 500px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+`;
+
 const Box = styled(motion.div)`
   width: 200px;
   height: 200px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgb(255, 255, 255);
   border-radius: 40px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const Circle = styled(motion.div)`
-  background-color: white;
-  height: 70px;
-  width: 70px;
-  place-self: center;
-  border-radius: 35px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-`;
-
 const boxVariants = {
-  start: { scale: 0, opacity: 0},
-  end: {
-    scale: 1,
-    opacity: 1,
-    rotateZ: 360,
-    transition: { type: "spring", bounce:0.5, duration: 2 },
-    delayChildren: 2,
-    staggerChildren: 0.5
-  },
+  hover: { scale: 1.2, rotate: 90 },
+  click: { scale: 1, borderRadius: "100px" },
+  drag : {backgroundColor:"rgb(100,200,205)", transition : {duration: 1}}
 };
 
-const circleVariants = {
-  start: {
-    scale:0, opacity:0
-  },
-  end : {
-    scale:1,
-    opacity:1,  
-  }
-}
-
-
 function App() {
+  const biggerBoxRef = useRef<HTMLDivElement>(null);
   return (
     <Wrapper>
-      <Box variants={boxVariants} initial="start" animate="end">
-      <Circle variants={circleVariants}/>
-      <Circle variants={circleVariants}/>
-      <Circle variants={circleVariants}/>
-      <Circle variants={circleVariants}/>
-      </Box> 
+      <BiggerBox>
+      <Box drag dragConstraints={biggerBoxRef} variants={boxVariants} whileDrag = "drag" whileHover="hover" whileTap="click"></Box>
+      </BiggerBox>
     </Wrapper>
   );
 }
