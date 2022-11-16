@@ -34,19 +34,31 @@ const boxVariants = {
     scale: 1,
     opacity: 1,
     rotateZ: 360,
-    transition: { type: "spring", delay: 0.3, bounce:0.5, duration: 2 },
+    transition: { type: "spring", bounce:0.5, duration: 2 },
+    delayChildren: 2,
+    staggerChildren: 0.5
   },
 };
+
+const circleVariants = {
+  start: {
+    scale:0, opacity:0
+  },
+  end : {
+    scale:1,
+    opacity:1,  
+  }
+}
 
 
 function App() {
   return (
     <Wrapper>
       <Box variants={boxVariants} initial="start" animate="end">
-      <Circle />
-      <Circle />
-      <Circle />
-      <Circle />
+      <Circle variants={circleVariants}/>
+      <Circle variants={circleVariants}/>
+      <Circle variants={circleVariants}/>
+      <Circle variants={circleVariants}/>
       </Box> 
     </Wrapper>
   );
